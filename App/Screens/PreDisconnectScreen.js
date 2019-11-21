@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Alert, StyleSheet, Text, View, TouchableOpacity , TextInput, Keyboard, ScrollView, SafeAreaView} from 'react-native';
+import { Alert, StyleSheet, Text, View, TouchableOpacity , TouchableWithoutFeedback, TextInput, Keyboard, ScrollView, SafeAreaView} from 'react-native';
 import GradientButton from 'react-native-gradient-buttons';
 import Moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -135,24 +135,32 @@ export default class PreDisconnectScreen extends React.Component{
                   </TouchableOpacity>
                   <View style = {styles.timebox}>       
                     <View style = {styles.timepair}>
-                      <TextInput
-                        keyboardType = 'numeric'
-                        value={this.state.hourVal.toString()}
-                        onChangeText={(hourInput) => this.updateHour(hourInput)}
-                        style = {styles.timeval}
-                        onSubmitEditing={Keyboard.dismiss}
-                      />
+                      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+                        <TextInput
+                          keyboardType = 'number-pad'
+                          returnKeyType='done'
+                          value={this.state.hourVal.toString()}
+                          onChangeText={(hourInput) => this.updateHour(hourInput)}
+                          style = {styles.timeval}
+                          onSubmitEditing={Keyboard.dismiss}
+                          onEndEditing={Keyboard.dismiss}
+
+                        />
+                      </TouchableWithoutFeedback>
+
                       <Text style = {styles.timeunit}>  hr </Text> 
                     </View>
                     <View style = {styles.timepair}>
                       <TextInput
-                        keyboardType = 'numeric'
+                        keyboardType = 'number-pad'
+                        returnKeyType='done'
+
                         value={this.state.minVal.toString()}
                         onChangeText={(minInput) => this.updateMin(minInput)}
                         style = {styles.timeval}
                         maxLength = {2}
                         onSubmitEditing={Keyboard.dismiss}
-
                       />
                       <Text style = {styles.timeunit}>  min </Text>
                     </View>
@@ -195,7 +203,7 @@ export default class PreDisconnectScreen extends React.Component{
                   radius={30}
                   impact
                   impactStyle='Light'
-                  onPressAction={() => this.props.navigation.navigate('DuringDisconnectScreen')}
+                  onPressAction={() => this.props.navigation.navigate('DuringDisconnectScreen', {hour: this.state.hourVal, min: this.state.minVal})}
 //pass variables through disconnect screen
                 />
 

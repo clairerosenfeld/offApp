@@ -125,7 +125,8 @@ export default class DuringDisconnectScreen extends React.Component{
         <View style = {styles.timebox}>       
           <View style = {styles.timepair}>
             <TextInput
-              keyboardType = 'numeric'
+              keyboardType = 'number-pad'
+              returnKeyType='done'
               value={this.state.hourVal.toString()}
               onChangeText={(hourInput) => this.updateHour(hourInput)}
               style = {styles.timeval}
@@ -135,7 +136,9 @@ export default class DuringDisconnectScreen extends React.Component{
           </View>
           <View style = {styles.timepair}>
             <TextInput
-              keyboardType = 'numeric'
+              keyboardType = 'number-pad'
+              returnKeyType='done'
+
               value={this.state.minVal.toString()}
               onChangeText={(minInput) => this.updateMin(minInput)}
               style = {styles.timeval}
@@ -162,8 +165,8 @@ export default class DuringDisconnectScreen extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      hourVal:0,
-      minVal: 0,
+      hourVal: props.navigation.getParam('hour', 0),
+      minVal: props.navigation.getParam('min', 0),
       endTime: new Date().toLocaleTimeString(),
     };
   }
