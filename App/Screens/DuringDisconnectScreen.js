@@ -20,6 +20,12 @@ export default class DuringDisconnectScreen extends React.Component{
         shadowOpacity: 0,
       },
       headerRight: () => <WhiteSettings/>,
+      headerTitle: ()=>
+        <View style = {styles.logocontainer}>
+          <Text style= {styles.logo}> 
+            off 
+          </Text>
+        </View>,
 
   };
 
@@ -32,7 +38,7 @@ export default class DuringDisconnectScreen extends React.Component{
       'apercu-med': require('../../assets/fonts/apercu_medium.ttf'),
 
     });
-
+    
     this.setState({ assetsLoaded: true });
 
   }
@@ -120,7 +126,7 @@ export default class DuringDisconnectScreen extends React.Component{
       </Text>  
       <View style = {styles.settime}>
         <TouchableOpacity onPress={this.DecrementTime} >
-          <Icon name="minus" color="#313131" size = {30}  ></Icon>
+          <Icon name="minus" color="white" size = {30}  ></Icon>
         </TouchableOpacity>
         <View style = {styles.timebox}>       
           <View style = {styles.timepair}>
@@ -150,7 +156,7 @@ export default class DuringDisconnectScreen extends React.Component{
           </View>
         </View>
         <TouchableOpacity onPress={this.IncrementTime} >
-          <Icon name="plus" color="#313131" size = {30}  ></Icon>
+          <Icon name="plus" color="white" size = {30}  ></Icon>
         </TouchableOpacity>
       </View>
 
@@ -216,25 +222,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  logocontainer:{
-    flex: 1,
-    flexDirection: 'row', 
-    justifyContent: 'center',
-  },
-
   logo:{
     alignSelf: 'center',
     color: 'white',
-    fontSize: 100,
+    fontSize: 40,
     fontWeight: '900',
     fontFamily: 'apercu-bold'
   },
 
-  logooval:{
-    backgroundColor: '#FFCA41',
-    borderRadius: 100,
-    width: 202,
-    height: 131,
+  logocontainer:{
+    backgroundColor: '#696969',
+    borderRadius: 25,
+    width: 73,
+    height: 47,
     justifyContent: 'center',
   },
 
@@ -242,7 +242,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     width: 260,
     alignItems: 'center',
-    backgroundColor: '#2196F3'
   },
 
   quitbutton:{
@@ -286,7 +285,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     shadowOffset: {width: 3,  height: 5},
-    shadowColor: 'grey',
+    shadowColor: '#696969',
     shadowOpacity: 1.0,
 
   },
@@ -308,7 +307,7 @@ const styles = StyleSheet.create({
   },
 
   titlefont:{
-    fontSize: 30,
+    fontSize: 20,
     fontFamily: 'apercu-med',
     color: 'white',
     justifyContent: 'center',
@@ -316,7 +315,8 @@ const styles = StyleSheet.create({
   duration:{
     flex: 1.5,
     flexDirection:'column',
-    alignContent: 'space-around',
+    alignContent: 'center',
+    alignItems: 'center',
     paddingTop: '10%',
     paddingHorizontal: '10%',
     justifyContent: 'center',
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',     
-    backgroundColor: '#313131',
+    backgroundColor: 'grey',
     padding: 30,
     borderRadius: 50,
     margin: 20,
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   },
   subtitlefont:{
     fontSize: 15,
-    color: 'grey',
+    color: '#696969',
     fontFamily: 'apercu-reg'
 
   },

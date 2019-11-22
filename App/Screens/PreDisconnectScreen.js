@@ -204,7 +204,6 @@ export default class PreDisconnectScreen extends React.Component{
                   impact
                   impactStyle='Light'
                   onPressAction={() => this.props.navigation.navigate('DuringDisconnectScreen', {hour: this.state.hourVal, min: this.state.minVal})}
-//pass variables through disconnect screen
                 />
 
               </View> 
