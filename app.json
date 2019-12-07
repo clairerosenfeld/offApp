@@ -9,11 +9,11 @@
       "android",
       "web"
     ],
-    "version": "1.0.0", //before I redeploy in the future, I increment the version #
+    "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logosquare.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/yellow-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -24,8 +24,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-     // "bundleIdentifier"
-    }
+      "supportsTablet": true
+    },
+    "description": "off is a mobile app designed for the iPhone X. the app gives you the power to disconnect from your phone!",
+    "owner": "offapp"
   }
 }

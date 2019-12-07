@@ -1,18 +1,39 @@
 import React, {Component} from 'react';
-import { Alert, StyleSheet, Text, View, TouchableOpacity , TouchableWithoutFeedback, TextInput, Keyboard, ScrollView, SafeAreaView} from 'react-native';
+import { Alert, StyleSheet, Dimensions, Text, View, TouchableOpacity , TouchableWithoutFeedback, TextInput, Keyboard, ScrollView, SafeAreaView} from 'react-native';
 import GradientButton from 'react-native-gradient-buttons';
-import Moment from 'moment';
+import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {SwipeCards, CustomHeader} from '../Components';
 import * as Font from 'expo-font';
-import {createAppContainer} from 'react-navigation';
+import {createAppContainer, NavigationEvents, withNavigation} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
-export default class PreDisconnectScreen extends React.Component{
+import { connect } from 'react-redux';
+import store from '../store/index.js'
+
+class PreDisconnectScreen extends React.Component{
+
   static navigationOptions = {
     headerBackTitle: 'Quit',  
     shadowColor: 'transparent',  
+    headerLeft: () => null,
+
   };
+  constructor(props) {
+    super(props);
+    this.state = {
+      hourVal:props.navigation.getParam('hour', 0),
+      minVal: props.navigation.getParam('min', 0),
+      endTime: moment(new Date()).format("h:mm a"),
+      assetsLoaded: false,
+      emojis: [],
+      descriptions: [],
+      startTime: new moment(),
+      textresponse: '',
+   
+
+    };
+  }
 
   async componentDidMount (){
     await Font.loadAsync({
@@ -24,19 +45,24 @@ export default class PreDisconnectScreen extends React.Component{
     });
 
     this.setState({ assetsLoaded: true });
+    this.setState({ hourVal: 0});
+    this.setState({ minVal: 0});
+    this.setState({ emojis: []});
+    this.setState({ descriptions: []});
+
+    setInterval( () => {
+      this.setState({endTime : moment(new Date()).add(this.state.hourVal, 'hours').add(this.state.minVal, 'minutes').format("h:mm a") })
+      this.setState({startTime: new moment()})
+    },20);
+
+      var textmess= "Hey! On a disconnect rn. Will get back to you ASAP:)";
+      var emailmess ="Hello--\nI'm on a disconnect at the moment, so I can't respond to your email right now. I'll get back to your as soon as I can.\nBest, Claire. ";
+      var callmess = "Call me back in an hour. I'm on a disconnect."
+      this.props.navigation.setParams({hour: 0, min: 0, tb: false, cb: false, eb: false, 'text-response': textmess, 'email-response': emailmess,'call-response': callmess,  });
+
 
   }
   
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      hourVal:0,
-      minVal: 0,
-      endTime: new Date().toLocaleTimeString(),
-      assetsLoaded: false,
-    };
-  }
 
   IncrementTime = () => {
     var newMins = this.state.minVal+15;
@@ -47,13 +73,15 @@ export default class PreDisconnectScreen extends React.Component{
     }
     this.setState({hourVal:newHours})
     this.setState({minVal:newMins})
-    this.updateEndTime(newMins,newHours)
-   
+    var time = {newMins, newHours}
+    this.props.updateTime(time)
+
+
   }
 
   DecrementTime = () => {
     var newTime = 60*this.state.hourVal + this.state.minVal-15;
-    var newMins = this.state.minVals
+    var newMins = this.state.minVal
     var newHours = this.state.hourVal
 
     if (newTime<0){
@@ -71,11 +99,15 @@ export default class PreDisconnectScreen extends React.Component{
     }
     this.setState({hourVal:newHours})
     this.setState({minVal:newMins})
-    this.updateEndTime(newMins,newHours)   
+
+    var time = {newMins, newHours}
+    this.props.updateTime(time)
   }
 
   updateHour(hour){
     var newHours = 0;
+    var newMins = this.state.minVal;
+
     if (hour==''){
       newHours = 0;
     }
@@ -83,7 +115,9 @@ export default class PreDisconnectScreen extends React.Component{
       newHours = parseInt(hour);
     }
     this.setState({hourVal: newHours});
-    this.updateEndTime(this.state.minVal,newHours);
+    var time = {newMins, newHours}
+    this.props.updateTime(time)
+
   }
 
   updateMin(min){
@@ -103,35 +137,61 @@ export default class PreDisconnectScreen extends React.Component{
     }
     this.setState({hourVal: newHours});
     this.setState({minVal: newMins});
-    this.updateEndTime(newMins,this.state.hourVal);
-
+    var time = {newMins, newHours}
+    this.props.updateTime(time)
   }
 
-  updateEndTime(mins,hours){
-    var current = new Date();
-    current.setMinutes(current.getMinutes()+mins);
-    current.setHours(current.getHours()+hours);
-    this.setState({endTime: current.toLocaleTimeString()});
+  clickDisconnect = ()=> {
+    var minutes = this.state.minVal;
+    var hours = this.state.hourVal;
+
+    var t = this.props.navigation.getParam('text-response', null);
+    var e = this.props.navigation.getParam('email-response', null);
+    var c = this.props.navigation.getParam('call-response', null);
+    var tb = this.props.navigation.getParam('tb', null);
+    var eb = this.props.navigation.getParam('eb', null);
+    var cb = this.props.navigation.getParam('cb', null);
+
+    console.log('clickDisconnect', t, e, c)
+    console.log('toggles', tb, eb, cb)
+
+    if (hours==0 && minutes< 5){
+      Alert.alert('You must disconnect for at least 5 minutes')
+    }
+    else{
+
+      this.props.navigation.navigate('DuringDisconnectScreen', {hour: this.state.hourVal, min: this.state.minVal, startTime: this.state.startTime, 'text-response': t, 'call-response': c, 'email-response': e, 'tb': tb, 'cb': cb, 'eb': eb })
+    }
   }
 
+  reload = (payload) =>{
+      this.setState({hourVal: 0});
+      this.setState({minVal: 0})
+
+  }
 
   render(){
     if (this.state.assetsLoaded){
       
       return (
-          <SafeAreaView style={styles.container}>
-              <View style={styles.duration}>
-                <Text style = {styles.titlefont}>
-                  Duration      
-                </Text>   
-                <Text style = {styles.subtitlefont}>
-                  How long do you want to disconnect?      
-                </Text>
+          <ScrollView style = {{backgroundColor: '#FCFBF7'}}>
+              <NavigationEvents
+                onWillFocus={payload => this.reload(payload)}
+              />
+            <SafeAreaView style={styles.container}>
+
+            <View style = {{height: 20}}/>
+              <View style = {styles.chunk}>
+                <View style={styles.leftcontainer}>
+                  <Text style = {styles.titlefont}>Duration</Text>   
+                  <Text style = {styles.subtitlefont}>How long do you want to disconnect?    </Text>
+
+                </View>
 
 
                 <View style = {styles.settime}>
                   <TouchableOpacity onPress={this.DecrementTime} >
-                    <Icon name="minus" color="#2D1D05" size = {30}  ></Icon>
+                    <Icon name="minus" color="#454545" size = {27}  ></Icon>
                   </TouchableOpacity>
                   <View style = {styles.timebox}>       
                     <View style = {styles.timepair}>
@@ -145,6 +205,7 @@ export default class PreDisconnectScreen extends React.Component{
                           style = {styles.timeval}
                           onSubmitEditing={Keyboard.dismiss}
                           onEndEditing={Keyboard.dismiss}
+                          returnKeyType='done'
 
                         />
                       </TouchableWithoutFeedback>
@@ -155,7 +216,6 @@ export default class PreDisconnectScreen extends React.Component{
                       <TextInput
                         keyboardType = 'number-pad'
                         returnKeyType='done'
-
                         value={this.state.minVal.toString()}
                         onChangeText={(minInput) => this.updateMin(minInput)}
                         style = {styles.timeval}
@@ -166,49 +226,57 @@ export default class PreDisconnectScreen extends React.Component{
                     </View>
                   </View>
                   <TouchableOpacity onPress={this.IncrementTime} >
-                    <Icon name="plus" color="#2D1D05" size = {30}  ></Icon>
+                    <Icon name="plus" color="#454545" size = {27}  ></Icon>
                   </TouchableOpacity>
                 </View>
-                <View style = {{alignItems:'center'}}>
+                <View style = {styles.centercontainer}>
                   <Text style = {styles.subtitlefont}>
                     Ending at {this.state.endTime}
                   </Text>
                 </View>
-
               </View>
 
-              <View style = {styles.bar} />
+              <View style = {{height: 40}}/>
 
-              <View style={styles.activities}>
-                <Text style = {styles.titlefont}>
-                  Activities      
-                </Text>
-                <Text style = {styles.subtitlefont}>
-                  Find things to do before you disconnect      
-                </Text> 
-                <SwipeCards />
+              <View style = {styles.chunk}>
+                <View style={styles.leftcontainer}>
+                  <Text style = {styles.titlefont}>Activities</Text>
+                  <Text style = {styles.subtitlefont}>
+                    Find things to do before you disconnect      
+                  </Text> 
+                </View>
+
+                <View style={styles.centercontainer}>
+
+                  <SwipeCards />
+                </View>
               </View>
+              
+
+              <View style={{flex: .2}}/>
 
 
-              <View style={styles.disconnect}>
-                <GradientButton
-                  style={styles.disconnectbutton}
-                  text="Disconnect 👋"
-                  textStyle={styles.disconnectfont}
-                  gradientBegin="#5DACFF"
-                  gradientEnd="#007AFF"
-                  gradientDirection="diagonal"
-                  height={60}
-                  width={200}
-                  radius={30}
-                  impact
-                  impactStyle='Light'
-                  onPressAction={() => this.props.navigation.navigate('DuringDisconnectScreen', {hour: this.state.hourVal, min: this.state.minVal})}
-                />
+              <View style={styles.chunk}>
+                <View style={styles.centercontainer}>
+                  <GradientButton
+                    style={styles.disconnectbutton}
+                    text="Disconnect 👋"
+                    textStyle={styles.disconnectfont}
+                    gradientBegin="#5DACFF"
+                    gradientEnd="#007AFF"
+                    gradientDirection="diagonal"
+                    height={58}
+                    width={200}
+                    radius={29}
+                    impact
+                    impactStyle='Light'
+                    onPressAction={this.clickDisconnect}
+                  />
 
+                </View> 
               </View> 
-              <View style = {styles.bar} />
           </SafeAreaView>
+      </ScrollView>
         );
       }
 
@@ -220,14 +288,36 @@ export default class PreDisconnectScreen extends React.Component{
   }
 }
 
+function mapStateToProps(state){
+  let emojis = []
+  let descriptions = []
+  for (var i = 0; i < state.activities.length; i++){
+    emojis[i] = state.activities[i].emoji
+    descriptions[i] = state.activities[i].name
+  }
+  return {
+    emojis: emojis,
+    descriptions: descriptions,
+    minVal: state.time.min,
+    hourVal: state.time.hour
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return({
+        updateTime: (time) => {dispatch({type: 'UPDATE_TIME', time})}
+  })
+}
+
+export default withNavigation(connect(mapStateToProps, mapDispatchToProps)(PreDisconnectScreen))
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#FCFBF7',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: '10%',
+    justifyContent: 'space-between',
   },
 
   scrollview:{
@@ -241,6 +331,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: '5%',
     paddingVertical: '15%'
+  },
+
+  leftcontainer:{
+    alignItems: 'stretch',
+    flexDirection: 'column',
+    textAlign: 'left',
+    width: '100%',
+  },
+
+  centercontainer:{
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignSelf: 'center',
+    alignContent: 'center',
+   // marginVertical: 10,
+  },
+
+  chunk:{
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    textAlign: 'left',
+    flexDirection: 'column',   
+    width: 280,
   },
 
   logo:{
@@ -259,17 +373,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  duration:{
-    flex: 1,
-    alignContent: 'space-between',
-    paddingTop: '10%',
-    paddingHorizontal: '10%',
-
-  },
-
   settime:{
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    alignSelf: 'center',
   },
 
   timebox:{
@@ -279,10 +386,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFD824',
     padding: 30,
     borderRadius: 50,
-    margin: 20,
-    width: 220,
-
-
+    marginHorizontal: 20,
+    marginVertical: 10,
+    width: 210,
+    height: 105,
 
   },
 
@@ -290,12 +397,16 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '900',
     fontSize: 40,
+    textAlignVertical: 'bottom', 
+
   },
   
   timeunit:{
     color: 'white',
     fontWeight: '900',
     fontSize: 20,
+
+
   },
 
   timepair:{
@@ -303,9 +414,8 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
     alignContent: 'center',
 
+
   },
-
-
 
   disconnect:{
     flex: .5,
@@ -326,7 +436,7 @@ const styles = StyleSheet.create({
 
   disconnectfont:{
     color: 'white',
-    fontSize: 25,
+    fontSize: 23,
     fontWeight: '500',
     padding:5,
     fontFamily: 'apercu-med',
@@ -334,28 +444,46 @@ const styles = StyleSheet.create({
   },
 
   activities: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    paddingHorizontal: '10%',
-
+    flex: 3,
+    alignContent: 'space-between',
+    paddingTop: '10%',
   },
 
   titlefont:{
-    fontSize: 30,
-    fontFamily: 'apercu-med'
+    fontSize: 29,
+    fontFamily: 'apercu-med',
+    alignSelf: 'flex-start',
+    textAlign: 'left',
   },
 
   subtitlefont:{
-    fontSize: 15,
+    fontSize: 14,
     color: 'grey',
-    fontFamily: 'apercu-reg'
+    fontFamily: 'apercu-reg',
+    textAlign: 'left',
+    alignSelf: 'flex-start',
+  },
+
+  swipefont:{
+    fontSize: 8,
+    color: 'black',
+    fontFamily: 'apercu-reg',
+    textAlign: 'center'
+  },
+
+  swipetextcontainer:{
+    width: 40,
+    height: 40,
+  //  backgroundColor: '#FFF5C7',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    alignContent: 'center',
+    marginHorizontal: 10
 
   },
 
   bar:{
-    flex: .2,
-    flexDirection: 'column',
-    justifyContent: 'flex-start', 
+    flex: .6,
   }
 });

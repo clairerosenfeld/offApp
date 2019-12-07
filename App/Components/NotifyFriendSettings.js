@@ -2,44 +2,53 @@ import React, {Component} from 'react';
 import * as Font from 'expo-font';
 
 import { Switch, StyleSheet, Text, View, TouchableOpacity , TextInput, Keyboard, ScrollView, SafeAreaView} from 'react-native';
+import { withNavigation ,NavigationEvents} from 'react-navigation';
 
 
-export default class NotifyFriendSettings extends React.Component {
+class NotifyFriendSettings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       fontLoaded: false,
-      text: false,
-      email: false,
-      call: false,
-      textMessage: "sry. can't respond rn. on a disconnect.",
-      emailMessage: "I'm on a disconnect. I can't respond right now. Best, Jacob. ",
-      callMessage: "Call me back in an hour. I'm on a disconnect."
+      text: props.navigation.getParam('tb', false),
+      email: props.navigation.getParam('eb', false),
+      call: props.navigation.getParam('cb', false),
+      textMessage: props.navigation.getParam('text-response', "Hey! On a disconnect rn. Will get back to you ASAP:)"),
+      emailMessage: props.navigation.getParam('email-response', "Hello--\nI'm on a disconnect at the moment, so I can't respond to your email right now. I'll get back to your as soon as I can.\nBest, Claire. "),
+      callMessage: props.navigation.getParam('call-response', "Call me back in an hour. I'm on a disconnect.")
     };
   }
 
   toggleText = (value) =>{
-    this.setState({text: value})
-  }
+    this.setState({text: value})  ;
+    this.props.navigation.setParams({tb: value });
+   
+  //  this.setState({textMessage: this.props.navigation.getParam('textr', 'deafult')})
 
+  };
   toggleEmail = (value) =>{
-    this.setState({email: value})
-  }
+    this.setState({email: value});
+    this.props.navigation.setParams({eb: value });
+      }
 
   toggleCall = (value) =>{
-    this.setState({call: value})
-  }
+    this.setState({call: value});
+    this.props.navigation.setParams({cb: value });  }
 
   updateText = (text) =>{
     this.setState({textMessage:text})
+    this.props.navigation.setParams({'text-response': text });
   }
 
   updateEmail = (text) =>{
     this.setState({emailMessage:text})
+    this.props.navigation.setParams({'email-response': text });
+
   }
 
   updateCall = (text) =>{
     this.setState({callMessage:text})
+    this.props.navigation.setParams({'call-response': text });
   }
   async componentDidMount (){
     await Font.loadAsync({
@@ -49,7 +58,12 @@ export default class NotifyFriendSettings extends React.Component {
     });
 
     this.setState({ fontLoaded: true });
+    this.props.navigation.setParams({'email-response': this.state.emailMessage });
+    this.props.navigation.setParams({'text-response': this.state.textMessage });
+    this.props.navigation.setParams({'call-response': this.state.callMessage });
+
   }
+
 
   render() {
 
@@ -58,7 +72,7 @@ export default class NotifyFriendSettings extends React.Component {
         <SafeAreaView style = {styles.container}>
           <ScrollView>
             <View style = {styles.row}>
-              <Text style = {styles.titlefont}> Auto Text</Text>
+              <Text style = {styles.titlefont}>Auto Text</Text>
               <Switch
                 trackColor = {{true: '#FFD826'}}
                 onValueChange = {this.toggleText}
@@ -72,11 +86,15 @@ export default class NotifyFriendSettings extends React.Component {
                 value = {this.state.textMessage}
                 onChangeText={text => this.updateText(text)}
                 multiline = {true}
+                returnKeyType='done'
+                onSubmitEditing={Keyboard.dismiss}
+
+
               />
               ):( null)}
    
             <View style = {styles.row}>
-              <Text style = {styles.titlefont}> Auto Email</Text>
+              <Text style = {styles.titlefont}>Auto Email</Text>
              <Switch
                 trackColor = {{true: '#FFD826'}}
                 onValueChange = {this.toggleEmail}
@@ -90,13 +108,16 @@ export default class NotifyFriendSettings extends React.Component {
                 value = {this.state.emailMessage}
                 onChangeText={text => this.updateEmail(text)}
                 multiline = {true}
+                returnKeyType='done'
+                onSubmitEditing={Keyboard.dismiss}
+
               />            
               ):( null
               )}
 
 
             <View style = {styles.row}>
-              <Text style = {styles.titlefont}> Auto Call-Reply</Text>
+              <Text style = {styles.titlefont}>Auto Call-Reply</Text>
              <Switch
                 trackColor = {{true: '#FFD826'}}
                 onValueChange = {this.toggleCall}
@@ -110,6 +131,9 @@ export default class NotifyFriendSettings extends React.Component {
                 value = {this.state.callMessage}
                 onChangeText={text => this.updateCall(text)}
                 multiline = {true}
+                returnKeyType='done'
+                onSubmitEditing={Keyboard.dismiss}
+
               />            ):( null
               )}
 
@@ -126,11 +150,14 @@ export default class NotifyFriendSettings extends React.Component {
   }
 }
 
+export default withNavigation(NotifyFriendSettings);
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'stretch',
   },
 
@@ -146,9 +173,11 @@ const styles = StyleSheet.create({
     fontFamily: 'apercu-mono',
     color: 'grey',
     backgroundColor: '#F8F8F8',
-    paddingVertical: '5%',
+    paddingTop: 5,
+    paddingBottom: 7,
     paddingHorizontal: '10%',
     textAlignVertical: 'center',
+    alignItems: 'center',
 
   },
 

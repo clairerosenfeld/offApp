@@ -1,17 +1,28 @@
 import { createStackNavigator } from 'react-navigation-stack';
-import {CustomHeader,Logo, SettingsButton, WhiteSettings} from '../Components';
+import {CustomHeader,Logo, SettingsButton, WhiteSettings, QuitFromDD} from '../Components';
 import React, {Component} from 'react';
 
 import * as screens from '../Screens';
 
 const StackNav = createStackNavigator({
     PreDisconnectScreen: { screen: screens.PreDisconnectScreen },
-    DuringDisconnectScreen: {screen: screens.DuringDisconnectScreen}
+    DuringDisconnectScreen: {screen: screens.DuringDisconnectScreen},
+    WelcomeBackScreen: {screen: screens.WelcomeBackScreen},
+    DigestScreen: {screen: screens.DigestScreen},
+    IntroSliders: {screen: screens.IntroSliders},
+
+
   }, {
-  	initialRouteName: 'PreDisconnectScreen',
+  	initialRouteName: 'IntroSliders',
     headerBackTitleVisible: 'false',
+    mode: 'modal',
+    transitionConfig: () => ({
+      transitionSpec: {
+        duration: 400
+    }}),
   	defaultNavigationOptions:{
       headerStyle: {
+        marginTop: 10,
         borderBottomWidth: 0,
         shadowColor: 'transparent',
         shadowOpacity: 'transparent',
@@ -25,13 +36,7 @@ const StackNav = createStackNavigator({
 	}
 );
 
-/*const MyHeader = (navigation) => {
-return {
-    header: props => <Header {...props} />,
-    headerStyle: { backgroundColor: '#fff' },
-    headerTintColor: '#000',
-};
-}*/
+
 
 export default StackNav;
 

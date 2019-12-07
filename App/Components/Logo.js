@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity , TextInput, Keyboard, ScrollView, SafeAreaView} from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableOpacity , TextInput, Keyboard, ScrollView, SafeAreaView} from 'react-native';
 import { Button, Header } from 'react-native-elements';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -25,9 +25,10 @@ export default class Logo extends React.Component {
     if (this.state.logoLoaded){
       return (
          <View style = {styles.logocontainer}>
-            <Text style= {styles.logo}> 
-              off 
-            </Text>
+            <Image 
+              style = {{width: 73, height: 47}}
+              source = {require('../../assets/yellow-logo.png')}
+            />
           </View>
       );
     }
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
   },
 
   logocontainer:{
-    backgroundColor: '#FFD826',
+    backgroundColor: 'transparent',
     borderRadius: 25,
     width: 73,
     height: 47,

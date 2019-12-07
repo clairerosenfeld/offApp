@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Font from 'expo-font';
 import RBSheet from "react-native-raw-bottom-sheet";
 import {NotifyFriendSettings} from '../Components';
+import { withNavigation } from 'react-navigation';
 
 export default class WhiteSettings extends React.Component {
     constructor(props) {
@@ -46,7 +47,7 @@ export default class WhiteSettings extends React.Component {
 
           <TouchableOpacity  onPress={() => {this.RBSheet.open();}}>
             <View style = {styles.settingsbutton}>
-        <Icon name="bars" iconStyle= "light" color="white" size = {47}  ></Icon>
+              <Icon name="edit" color="white" size = {35}  ></Icon>
       </View> 
           </TouchableOpacity>
     </View>
@@ -64,12 +65,6 @@ export default class WhiteSettings extends React.Component {
 
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection:'column',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    alignContent: 'flex-start',
-  },
 
   header:{
     flex: 1,
@@ -77,11 +72,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: '5%',
-    paddingVertical: '15%',
+
   },
 
 
   settingsbutton:{
-  	height: 47,
+    height: 47,
+    alignItems: 'flex-start',
+    justifyContent: 'center' ,
+    marginRight: 10,
+
   }
 });

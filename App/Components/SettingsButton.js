@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity , TextInput, Keyboard, ScrollView, SafeAreaView} from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableOpacity , TextInput, Keyboard, ScrollView, SafeAreaView} from 'react-native';
 import { Button, Header } from 'react-native-elements';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -32,11 +32,11 @@ export default class SettingsButton extends React.Component {
             }}
             height={350}
             duration={250}
-      closeOnDragDown={true}
+            closeOnDragDown={true}
             customStyles={{
               container: {
-          justifyContent: 'flex-start',
-          alignItems: 'stretch',
+                justifyContent: 'flex-start',
+                alignItems: 'stretch',
               }
             }}
           >
@@ -45,8 +45,8 @@ export default class SettingsButton extends React.Component {
 
           <TouchableOpacity  onPress={() => {this.RBSheet.open();}}>
             <View style = {styles.settingsbutton}>
-        <Icon name="bars" iconStyle= "light" color="black" size = {47}  ></Icon>
-      </View> 
+              <Icon name="edit" color="#454545" size = {35}  ></Icon>
+            </View> 
           </TouchableOpacity>
     </View>
       );
@@ -63,24 +63,21 @@ export default class SettingsButton extends React.Component {
 
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection:'column',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    alignContent: 'flex-start',
-  },
+
 
   header:{
     flex: 1,
     flexDirection: 'row', 
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: '5%',
-    paddingVertical: '15%',
+    marginHorizontal: '5%',
   },
 
 
   settingsbutton:{
   	height: 47,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    marginRight: 10,
   }
 });
